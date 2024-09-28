@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Teorema de Pitágoras Interactivo</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.4.0/p5.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #controls {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+        }
+        input[type="number"] {
+            width: 60px;
+            padding: 5px;
+            margin: 0 5px;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        #description {
+            margin-top: 30px;
+            padding: 15px;
+            background-color: #e9ecef;
+            border-radius: 8px;
+        }
+        .highlight {
+            color: #ff5733; /* Color llamativo para palabras clave */
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Teorema de Pitágoras Interactivo</h1>
+    <div id="controls">
+        <div>
+            <label for="a">Lado A:</label>
+            <input type="number" id="a" placeholder="0" min="0">
+        </div>
+        <div>
+            <label for="b">Lado B:</label>
+            <input type="number" id="b" placeholder="0" min="0">
+        </div>
+        <div>
+            <label for="c">Hipotenusa C:</label>
+            <input type="number" id="c" placeholder="0" min="0">
+        </div>
+        <button id="calculateButton">Calcular</button>
+    </div>
+
+    <div id="description">
+        <h3>Descripción del Teorema de Pitágoras</h3>
+        <p id="descriptionText">
+            El <span class="highlight">teorema de Pitágoras</span> establece que en un triángulo rectángulo, 
+            el cuadrado de la <span class="highlight">hipotenusa</span> (C) es igual a la suma de los cuadrados 
+            de los otros dos lados (A y B). Es decir, <span class="highlight">C² = A² + B²</span>.
+        </p>
+        <h4>Pasos para calcular:</h4>
+        <ol>
+            <li>Identifica los lados del triángulo: A, B y C.</li>
+            <li>Si conoces A y B, calcula C usando la fórmula <span class="highlight">C = √(A² + B²)</span>.</li>
+            <li>Si conoces C y A, calcula B usando <span class="highlight">B = √(C² - A²)</span>.</li>
+            <li>Si conoces C y B, calcula A usando <span class="highlight">A = √(C² - B²)</span>.</li>
+        </ol>
+        <button id="readDescription">Leer Descripción</button>
+    </div>
+
+    <script>
+        let a, b, c;
+
+        function setup() {
+            createCanvas(400, 400);
+            drawTriangle();
+            document.getElementById("calculateButton").addEventListener("click", calculateAndDraw);
+            document.getElementById("readDescription").addEventListener("click", readDescription);
+        }
+
+        function drawTriangle() {
+            background(240);
+            stroke(0);
+            strokeWeight(2);
+            fill(100, 150, 255, 150); // Color azul claro con transparencia
+
+            // Dibuja el triángulo rectángulo
+            if (a && b) {
+                c = Math.sqrt(a * a + b * b).toFixed(2);
+                triangle(100, 300, 100 + a * 20, 300, 100, 300 - b * 20);
+            } else if (c && a) {
+                b = Math.sqrt(c * c - a * a).toFixed(2);
+                triangle(100, 300, 100 + a * 20, 300, 100, 300 - b * 20);
+            } else if (c && b) {
+                a = Math.sqrt(c * c - b * b).toFixed(2);
+                triangle(100, 300, 100 + a * 20, 300, 100, 300 - b * 20);
+            }
+
+            // Dibuja las etiquetas
+            textSize(16);
+            fill(0);
+            // Etiqueta de A
+            text(`A: ${a || 0}`, 100 + (a * 20 || 0) + 10, 300 + 10); // Ajuste para centrar A
+            // Etiqueta de B
+            text(`B: ${b || 0}`, 90, 300 - (b * 20 || 0) - 10); // Ajuste para centrar B
+            // Etiqueta de C (hipotenusa)
+            text(`C: ${c || 0}`, 100 + (a * 20 || 0) / 2 - 10, 300 - (b * 20 || 0) / 2 - 10); // Ajuste de la ubicación de C
+        }
+
+        function calculateAndDraw() {
+            a = parseFloat(document.getElementById("a").value);
+            b = parseFloat(document.getElementById("b").value);
+            c = parseFloat(document.getElementById("c").value);
+            drawTriangle();
+            document.getElementById("descriptionText").textContent = 
+                `Lados ingresados: A: ${a || 0}, B: ${b || 0}, C: ${c || 0}.`;
+        }
+
+        function readDescription() {
+            const text = document.getElementById("descriptionText").innerText;
+            const utterance = new SpeechSynthesisUtterance(text);
+            speechSynthesis.speak(utterance);
+        }
+
+        // Inicializa el triángulo con valores vacíos
+        window.onload = setup;
+    </script>
+
+</body>
+</html>
